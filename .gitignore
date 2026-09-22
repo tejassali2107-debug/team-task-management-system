@@ -22,3 +22,6 @@ Thumbs.db
 # IDE
 .idea/
 *.swp
+
+# Local tooling state
+.claude/

@@ -2,6 +2,8 @@
 
 A role-based full-stack task management application for organizations to manage teams, assign tasks, track progress, collaborate through comments, and get notified of important task events.
 
+**Live frontend**: https://frontend-inky-nine-90.vercel.app — deployed, but its `VITE_API_BASE_URL` still points at a local placeholder because no backend is hosted yet (see [Deployment](#deployment)). Once a backend is deployed, update that environment variable in the Vercel project and redeploy to make the live demo fully functional.
+
 ## Tech stack
 
 | Layer | Technology |
@@ -150,11 +152,22 @@ Frontend (`frontend/.env.development` or build-time `VITE_API_BASE_URL`):
 
 ## Deployment
 
-**Frontend (Vercel)** — a `vercel.json` (SPA rewrite rule) is already in `frontend/`. Easiest path: on [vercel.com](https://vercel.com), "Add New Project" → "Import Git Repository" → select this repo → set the **Root Directory** to `frontend` → add an environment variable `VITE_API_BASE_URL` pointing at your deployed backend URL → Deploy. No CLI login needed.
+**Frontend (Vercel)** — already deployed at https://frontend-inky-nine-90.vercel.app from the `frontend/` directory (project `tejassali/frontend`, a `vercel.json` SPA rewrite rule is included). To point it at a real backend once one is deployed:
+
+```bash
+cd frontend
+vercel env rm VITE_API_BASE_URL production   # remove the localhost placeholder
+vercel env add VITE_API_BASE_URL production  # paste the deployed backend's URL + /api
+vercel --prod                                 # redeploy with the new value baked in
+```
+
+(Or do the same from the Vercel dashboard → Project → Settings → Environment Variables → redeploy.)
 
 **Backend** — this is a stateful ASP.NET Core API with a SQL Server dependency, so it needs a container/VM host rather than a serverless static host. Any of the following work with the existing `backend/Dockerfile`:
 - [Render](https://render.com) or [Railway](https://railway.app) — "New Web Service from Dockerfile", plus a managed SQL Server/PostgreSQL add-on (swap the EF Core provider if using PostgreSQL) and the same environment variables as `docker-compose.yml`.
 - Azure App Service / Azure Container Apps with Azure SQL — the most natural fit for a SQL Server + .NET stack.
+
+After deploying the backend, also add its URL to `Cors:AllowedOrigins` (e.g. via a `Cors__AllowedOrigins__0` environment variable) so the deployed frontend is permitted to call it.
 
 After deploying the backend, update the frontend's `VITE_API_BASE_URL` (and the backend's `Cors:AllowedOrigins`) to point at each other's live URLs, then redeploy.
 
