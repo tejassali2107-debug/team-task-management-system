@@ -5,6 +5,7 @@ import { getTeams } from "../api/teams";
 import { extractErrorMessage } from "../api/client";
 import UserFormModal from "../components/UserFormModal";
 import ConfirmDialog from "../components/ConfirmDialog";
+import { IconPlus } from "../components/icons";
 
 const ROLES = ["Admin", "Manager", "User"];
 
@@ -64,19 +65,27 @@ export default function UsersPage() {
     }
   };
 
-  if (loading) return <div className="page-loading">Loading users...</div>;
+  if (loading)
+    return (
+      <div className="page-loading">
+        <span className="spinner" />
+        <span>Loading users...</span>
+      </div>
+    );
 
   return (
     <div>
       <div className="page-header-row">
         <h1 className="page-title">Users</h1>
         <button className="btn btn-primary" onClick={() => setShowForm(true)}>
-          + New user
+          <IconPlus width={16} height={16} />
+          New user
         </button>
       </div>
 
       {error && <div className="alert alert-error">{error}</div>}
 
+      <div className="table-wrap">
       <table className="data-table">
         <thead>
           <tr>
@@ -122,6 +131,7 @@ export default function UsersPage() {
           ))}
         </tbody>
       </table>
+      </div>
 
       {showForm && (
         <UserFormModal teams={teams} onClose={() => setShowForm(false)} onSubmit={handleCreate} />

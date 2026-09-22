@@ -4,6 +4,7 @@ import {
   markAllNotificationsRead,
   markNotificationRead,
 } from "../api/notifications";
+import { IconBell } from "./icons";
 
 function timeAgo(dateString) {
   const diffMs = Date.now() - new Date(dateString).getTime();
@@ -59,7 +60,7 @@ export default function NotificationBell() {
   return (
     <div className="notification-bell" ref={containerRef}>
       <button className="icon-button" onClick={() => setOpen((o) => !o)} aria-label="Notifications">
-        <span aria-hidden="true">&#128276;</span>
+        <IconBell width={20} height={20} />
         {unreadCount > 0 && <span className="badge-count">{unreadCount}</span>}
       </button>
 

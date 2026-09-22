@@ -9,6 +9,7 @@ import StatusBadge from "../components/StatusBadge";
 import PriorityBadge from "../components/PriorityBadge";
 import TaskFormModal from "../components/TaskFormModal";
 import ConfirmDialog from "../components/ConfirmDialog";
+import { IconPlus, IconSearch } from "../components/icons";
 
 const STATUSES = ["ToDo", "InProgress", "Done"];
 const PRIORITIES = ["Low", "Medium", "High"];
@@ -89,18 +90,22 @@ export default function TasksPage() {
         <h1 className="page-title">Tasks</h1>
         {canManage && (
           <button className="btn btn-primary" onClick={() => setShowForm(true)}>
-            + New task
+            <IconPlus width={16} height={16} />
+            New task
           </button>
         )}
       </div>
 
       <div className="filter-bar">
-        <input
-          type="search"
-          placeholder="Search title or description..."
-          value={filters.search}
-          onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value }))}
-        />
+        <div className="input-with-icon" style={{ flex: 1, minWidth: 220 }}>
+          <IconSearch width={16} height={16} />
+          <input
+            type="search"
+            placeholder="Search title or description..."
+            value={filters.search}
+            onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value }))}
+          />
+        </div>
         <select
           value={filters.status}
           onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))}
@@ -136,10 +141,14 @@ export default function TasksPage() {
       {error && <div className="alert alert-error">{error}</div>}
 
       {loading ? (
-        <div className="page-loading">Loading tasks...</div>
+        <div className="page-loading">
+          <span className="spinner" />
+          <span>Loading tasks...</span>
+        </div>
       ) : tasks.length === 0 ? (
         <p className="empty-state">No tasks match your filters.</p>
       ) : (
+        <div className="table-wrap">
         <table className="data-table">
           <thead>
             <tr>
@@ -203,6 +212,7 @@ export default function TasksPage() {
             })}
           </tbody>
         </table>
+        </div>
       )}
 
       {showForm && (

@@ -5,6 +5,7 @@ import { getUsers } from "../api/users";
 import { extractErrorMessage } from "../api/client";
 import TeamFormModal from "../components/TeamFormModal";
 import ConfirmDialog from "../components/ConfirmDialog";
+import { IconPlus } from "../components/icons";
 
 export default function TeamsPage() {
   const { user } = useAuth();
@@ -86,7 +87,13 @@ export default function TeamsPage() {
     }
   };
 
-  if (loading) return <div className="page-loading">Loading teams...</div>;
+  if (loading)
+    return (
+      <div className="page-loading">
+        <span className="spinner" />
+        <span>Loading teams...</span>
+      </div>
+    );
 
   return (
     <div>
@@ -94,7 +101,8 @@ export default function TeamsPage() {
         <h1 className="page-title">Teams</h1>
         {isAdmin && (
           <button className="btn btn-primary" onClick={() => setShowForm(true)}>
-            + New team
+            <IconPlus width={16} height={16} />
+            New team
           </button>
         )}
       </div>

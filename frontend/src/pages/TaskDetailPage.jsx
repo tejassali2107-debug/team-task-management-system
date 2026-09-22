@@ -5,6 +5,7 @@ import * as tasksApi from "../api/tasks";
 import { extractErrorMessage } from "../api/client";
 import StatusBadge from "../components/StatusBadge";
 import PriorityBadge from "../components/PriorityBadge";
+import { IconArrowLeft } from "../components/icons";
 
 const STATUSES = ["ToDo", "InProgress", "Done"];
 
@@ -62,7 +63,13 @@ export default function TaskDetailPage() {
     }
   };
 
-  if (loading) return <div className="page-loading">Loading task...</div>;
+  if (loading)
+    return (
+      <div className="page-loading">
+        <span className="spinner" />
+        <span>Loading task...</span>
+      </div>
+    );
   if (error && !task) return <div className="alert alert-error">{error}</div>;
   if (!task) return null;
 
@@ -70,8 +77,9 @@ export default function TaskDetailPage() {
 
   return (
     <div>
-      <button className="link-button" onClick={() => navigate(-1)}>
-        &larr; Back
+      <button className="link-button back-link" onClick={() => navigate(-1)}>
+        <IconArrowLeft width={15} height={15} />
+        Back
       </button>
 
       <div className="task-detail-header">
