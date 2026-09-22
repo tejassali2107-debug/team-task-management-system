@@ -148,6 +148,16 @@ Frontend (`frontend/.env.development` or build-time `VITE_API_BASE_URL`):
 |---|---|
 | `VITE_API_BASE_URL` | Base URL of the backend API, e.g. `http://localhost:5080/api` |
 
+## Deployment
+
+**Frontend (Vercel)** — a `vercel.json` (SPA rewrite rule) is already in `frontend/`. Easiest path: on [vercel.com](https://vercel.com), "Add New Project" → "Import Git Repository" → select this repo → set the **Root Directory** to `frontend` → add an environment variable `VITE_API_BASE_URL` pointing at your deployed backend URL → Deploy. No CLI login needed.
+
+**Backend** — this is a stateful ASP.NET Core API with a SQL Server dependency, so it needs a container/VM host rather than a serverless static host. Any of the following work with the existing `backend/Dockerfile`:
+- [Render](https://render.com) or [Railway](https://railway.app) — "New Web Service from Dockerfile", plus a managed SQL Server/PostgreSQL add-on (swap the EF Core provider if using PostgreSQL) and the same environment variables as `docker-compose.yml`.
+- Azure App Service / Azure Container Apps with Azure SQL — the most natural fit for a SQL Server + .NET stack.
+
+After deploying the backend, update the frontend's `VITE_API_BASE_URL` (and the backend's `Cors:AllowedOrigins`) to point at each other's live URLs, then redeploy.
+
 ## CI
 
 `.github/workflows/ci.yml` runs on every push/PR to `main`: restores, builds, and tests the backend (`dotnet test`), and installs, lints, and builds the frontend (`npm run build`).
