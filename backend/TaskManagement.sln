@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.UnitTests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.IntegrationTests", "tests\TaskManagement.IntegrationTests\TaskManagement.IntegrationTests.csproj", "{1CB3F3A7-4BB1-4B30-ACCF-9384E63B8229}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.Infrastructure.Postgres", "src\TaskManagement.Infrastructure.Postgres\TaskManagement.Infrastructure.Postgres.csproj", "{2C046CCD-4CA8-4AE6-A4DE-E7A64A871139}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{1CB3F3A7-4BB1-4B30-ACCF-9384E63B8229}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CB3F3A7-4BB1-4B30-ACCF-9384E63B8229}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CB3F3A7-4BB1-4B30-ACCF-9384E63B8229}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C046CCD-4CA8-4AE6-A4DE-E7A64A871139}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C046CCD-4CA8-4AE6-A4DE-E7A64A871139}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C046CCD-4CA8-4AE6-A4DE-E7A64A871139}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C046CCD-4CA8-4AE6-A4DE-E7A64A871139}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D2660117-F8FA-4C32-81A7-12244062BD57} = {618086B7-E389-471A-8F38-6BFF4EDF8907}
@@ -60,5 +66,6 @@ Global
 		{869AC0D7-3F5B-4756-B6FC-C1DD52F2DA31} = {618086B7-E389-471A-8F38-6BFF4EDF8907}
 		{169E46A9-4EF2-4A4B-A24D-77ABB2D62E9E} = {A009D332-16CA-457F-A6E6-97900388AA73}
 		{1CB3F3A7-4BB1-4B30-ACCF-9384E63B8229} = {A009D332-16CA-457F-A6E6-97900388AA73}
+		{2C046CCD-4CA8-4AE6-A4DE-E7A64A871139} = {618086B7-E389-471A-8F38-6BFF4EDF8907}
 	EndGlobalSection
 EndGlobal

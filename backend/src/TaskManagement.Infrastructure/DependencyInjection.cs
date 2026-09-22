@@ -12,8 +12,23 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var provider = configuration["Database:Provider"] ?? "SqlServer";
+
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        {
+            if (string.Equals(provider, "Postgres", StringComparison.OrdinalIgnoreCase))
+            {
+                // Deployed environments (e.g. Render) use Postgres, since it's available on a free
+                // managed tier and SQL Server needs more RAM than free hosting tiers provide.
+                // Local/Docker development keeps using SQL Server via the default branch below.
+                options.UseNpgsql(connectionString, x => x.MigrationsAssembly("TaskManagement.Infrastructure.Postgres"));
+            }
+            else
+            {
+                options.UseSqlServer(connectionString);
+            }
+        });
 
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
 
