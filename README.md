@@ -2,7 +2,7 @@
 
 A role-based full-stack task management application for organizations to manage teams, assign tasks, track progress, collaborate through comments, and get notified of important task events.
 
-**Live frontend**: https://frontend-inky-nine-90.vercel.app — deployed, but its `VITE_API_BASE_URL` still points at a local placeholder because no backend is hosted yet (see [Deployment](#deployment)). Once a backend is deployed, update that environment variable in the Vercel project and redeploy to make the live demo fully functional.
+**Live demo**: https://frontend-inky-nine-90.vercel.app (frontend on Vercel, backend on Render, database on Render PostgreSQL) — fully functional, seeded with the demo accounts below.
 
 ## Tech stack
 
@@ -140,7 +140,8 @@ Backend (`backend/src/TaskManagement.Api/appsettings.json` / environment variabl
 
 | Key | Purpose |
 |---|---|
-| `ConnectionStrings:DefaultConnection` | SQL Server connection string |
+| `Database:Provider` | `SqlServer` (default) or `Postgres` — selects the EF Core provider |
+| `ConnectionStrings:DefaultConnection` | Connection string matching whichever provider is selected |
 | `Jwt:Key` / `Jwt:Issuer` / `Jwt:Audience` / `Jwt:ExpiryMinutes` | JWT signing configuration |
 | `Cors:AllowedOrigins` | Origins allowed to call the API from the browser |
 
@@ -152,20 +153,30 @@ Frontend (`frontend/.env.development` or build-time `VITE_API_BASE_URL`):
 
 ## Deployment
 
-**Frontend (Vercel)** — already deployed at https://frontend-inky-nine-90.vercel.app from the `frontend/` directory (project `tejassali/frontend`, a `vercel.json` SPA rewrite rule is included). To point it at a real backend once one is deployed:
+Both pieces are live:
+
+| Piece | Host | URL |
+|---|---|---|
+| Frontend | Vercel (project `tejassali/frontend`) | https://frontend-inky-nine-90.vercel.app |
+| Backend API | Render (Docker web service) | https://taskflow-backend-9a65.onrender.com (Swagger at `/swagger`) |
+| Database | Render PostgreSQL (free tier) | internal to the Render service |
+
+**Why Postgres in production but SQL Server locally?** Render has no managed SQL Server, and SQL Server itself needs more RAM (~2GB) than free-tier compute anywhere offers. Rather than force a paid host, the backend supports both providers side by side — see [`TaskManagement.Infrastructure.Postgres`](backend/src/TaskManagement.Infrastructure.Postgres) for the Postgres-specific migrations, and `Database:Provider` in config (`SqlServer` default, `Postgres` on Render) for the switch. The Domain/Application/Api layers and all business logic are identical either way; only `DependencyInjection.cs` branches on the provider.
+
+**Redeploying the frontend** after a change:
 
 ```bash
 cd frontend
-vercel env rm VITE_API_BASE_URL production   # remove the localhost placeholder
-vercel env add VITE_API_BASE_URL production  # paste the deployed backend's URL + /api
-vercel --prod                                 # redeploy with the new value baked in
+vercel --prod
 ```
 
-(Or do the same from the Vercel dashboard → Project → Settings → Environment Variables → redeploy.)
+**Redeploying the backend**: Render's `autoDeploy` is on, so any push to `main` that touches `backend/` triggers a fresh build automatically. To change config, update the service's environment variables in the Render dashboard (or via its API) and redeploy.
 
-**Backend** — this is a stateful ASP.NET Core API with a SQL Server dependency, so it needs a container/VM host rather than a serverless static host. Any of the following work with the existing `backend/Dockerfile`:
-- [Render](https://render.com) or [Railway](https://railway.app) — "New Web Service from Dockerfile", plus a managed SQL Server/PostgreSQL add-on (swap the EF Core provider if using PostgreSQL) and the same environment variables as `docker-compose.yml`.
-- Azure App Service / Azure Container Apps with Azure SQL — the most natural fit for a SQL Server + .NET stack.
+**Caveat**: Render's free Postgres instance expires 30 days after creation unless upgraded to a paid plan — fine for evaluation, not for a permanent deployment.
+
+Other options if you want to self-host instead:
+- [Railway](https://railway.app) — same Dockerfile-based approach as Render.
+- Azure App Service + Azure SQL Database — the most natural fit for a SQL Server + .NET stack, but Azure requires a card on file even for its free tier.
 
 After deploying the backend, also add its URL to `Cors:AllowedOrigins` (e.g. via a `Cors__AllowedOrigins__0` environment variable) so the deployed frontend is permitted to call it.
 
